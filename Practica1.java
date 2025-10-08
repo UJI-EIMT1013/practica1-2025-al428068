@@ -32,48 +32,87 @@ public class Practica1 {
 
     //EJERCICIO2
     public static void separate (Set<Integer> cuadrados, Set<Integer> noCuadrados)  {
-        Set<Integer> union = new HashSet<>(cuadrados);
-        union.addAll(noCuadrados);
+        Set<Integer> universo = new HashSet<>();
+        universo.addAll(cuadrados);
+        universo.addAll(noCuadrados);
 
-        Set<Integer> posiblesRaices = new HashSet<>();
-        for (int y : union) {
-            posiblesRaices.add(y);
-        }
+        Set<Integer> cuadradosFinal = new HashSet<>();
+        Set<Integer> noCuadradosFinal = new HashSet<>();
 
-        Set<Integer> nuevosCuadrados = new HashSet<>();
-        Set<Integer> nuevosNoCuadrados = new HashSet<>();
-        for (int x : union) {
-            boolean esCuadrado = false;
-            for (int y : posiblesRaices) {
-                if (y * y == x) {
-                    esCuadrado = true;
-                    break;
+        for (int candidato : universo) {
+            boolean encontrado = false;
+            for (int posibleRaiz : universo) {
+                if (Math.sqrt(candidato) == posibleRaiz) {
+                    // Solo debe ser cuadrado si está en ambos conjuntos
+                    if (candidato == posibleRaiz) {
+                        if (cuadrados.contains(candidato) && noCuadrados.contains(candidato)) {
+                            encontrado = true;
+                            break;
+                        }
+                    } else {
+                        encontrado = true;
+                        break;
+                    }
                 }
             }
-            if (esCuadrado) {
-                nuevosCuadrados.add(x);
+            if (encontrado) {
+                cuadradosFinal.add(candidato);
             } else {
-                nuevosNoCuadrados.add(x);
+                noCuadradosFinal.add(candidato);
             }
         }
 
         cuadrados.clear();
+        cuadrados.addAll(cuadradosFinal);
         noCuadrados.clear();
-        cuadrados.addAll(nuevosCuadrados);
-        noCuadrados.addAll(nuevosNoCuadrados);
+        noCuadrados.addAll(noCuadradosFinal);
     }
 
     //EJERCICIO 3
     public static<T> Collection<Set<T>> divideInSets (Iterator<T> it) {
-        //TODO
-        return null;
+        Collection<Set<T>> coleccion = new ArrayList<>();
+
+        while (it.hasNext()) {
+            T numero = it.next();
+            boolean esAñadido = false;
+
+            for (Set<T> conjunto : coleccion) {
+                if (!conjunto.contains(numero)) {
+                    conjunto.add(numero);
+                    esAñadido = true;
+                    break;
+                }
+            }
+
+            if (!esAñadido) {
+                Set<T> nuevoConjunto = new HashSet<>();
+                nuevoConjunto.add(numero);
+                coleccion.add(nuevoConjunto);
+            }
+        }
+
+        return coleccion;
     }
 
     //EJERCICIO 4
     public static<T> Collection<Set<T>> coverageSet2 (Set<T> u,ArrayList<Set<T>> col) {
-        //TODO
-        return null;
+        Collection<Set<T>> resultado = new LinkedHashSet<>();
+        for (int a = 0; a < col.size(); a++) {
+            Set<T> setA = col.get(a);
+            for (int b = 0; b < col.size(); b++) {
+                if (a == b) continue;
+                Set<T> unionTemp = new HashSet<>(setA);
+                unionTemp.addAll(col.get(b));
+                if (unionTemp.size() == u.size() && unionTemp.containsAll(u) && !setA.equals(u) && !col.get(b).equals(u)) {
+                    resultado.add(setA);
+                    resultado.add(col.get(b));
+                    return resultado;
+                }
+            }
+        }
+        return resultado;
     }
+
 
 
 
