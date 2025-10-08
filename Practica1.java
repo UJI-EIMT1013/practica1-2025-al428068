@@ -61,7 +61,6 @@ public class Practica1 {
                 noCuadradosFinal.add(candidato);
             }
         }
-
         cuadrados.clear();
         cuadrados.addAll(cuadradosFinal);
         noCuadrados.clear();
